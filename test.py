@@ -1,23 +1,32 @@
+import sys
+from PIL import Image
 import torch
-import torch.nn as nn
-from torch import Tensor
+from run import optimize_prompt
 
-import pytest
-from optim_utils import nn_project
+def test_optimize_prompt():
+    # Load test image
+    test_image = Image.new('RGB', (256, 256), color='white')
 
-@pytest.fixture
-def sample_input():
-    return torch.tensor([[0.1, 0.2], [-0.3, -0.4]])
+    # Define test args
+    args = argparse.Namespace()
+    args.iter = 10
+    args.clip_model = 'ViT-B/32'
+    args.clip_pretrain = True
+    args.print_step = 5
+    args.learning_rate = 0.1
 
-def test_nn_project(nn_indices: Tensor, embedding_layer: nn.Linear) -> Tensor:
-    # Cast nn_indices to the same dtype as embedding_layer.weight
-    nn_indices = nn_indices.to(embedding_layer.weight.dtype)
+    # Load CLIP model
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    model, _, preprocess = open_clip.create_model_and_transforms(
+        args.clip_model, pretrained=args.clip_pretrain, device=DEVICE)
 
-    # Project the indices onto the embedding space
-    projected_embeds = embedding_layer(nn_indices)
+    # Optimize prompt
+    learned_prompt = optimize_prompt(
+        model,
+        preprocess,
+        args,
+        DEVICE,
+        target_images=[test_image])
 
-    # Normalize the projected embeddings
-    norm = projected_embeds.norm(p=2, dim=1, keepdim=True)
-    normalized_embeds = projected_embeds.div(norm)
-
-    return normalized_embeds
+    # Assert that the output is a torch.Tensor
+    assert isinstance(learned_prompt, torch.Tensor)
