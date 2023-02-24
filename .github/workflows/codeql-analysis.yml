@@ -1,19 +1,33 @@
-name: CodeQL
+name: Security Analysis
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
 
 jobs:
   analyze:
+    name: Analyze code for security vulnerabilities
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
         with:
-          fetch-depth: 2
-      - uses: github/codeql-action/init@v2
+          languages: python
+
+      - name: Build CodeQL database
+        uses: github/codeql-action/analyze@v2
         with:
-          languages: cpp, python
-          queries: +security-and-quality
-      - uses: github/codeql-action/autobuild@v2
-      - uses: github/codeql-action/analyze@v2
+          # Path to the CodeQL query files
+          queries: security-queries/python
+          # Path to the CodeQL database
+          database-path: codeql-db
+
+      - name: Upload CodeQL results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          # Path to the SARIF file containing the CodeQL analysis results
+          sarif_file: codeql-results.sarif
