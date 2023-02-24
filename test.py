@@ -1,6 +1,6 @@
 import torch
 import pytest
-from my_module import nn_project
+from optim_utils import nn_project
 
 @pytest.fixture
 def sample_input():
