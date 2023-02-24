@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+
 import pytest
 from optim_utils import nn_project
 
