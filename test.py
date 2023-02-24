@@ -1,9 +1,12 @@
 import torch
-from transformers import AutoTokenizer
-from my_module import decode_ids
+import pytest
+from my_module import nn_project
 
-def test_decode_ids():
-    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-    input_ids = torch.tensor([[101, 2023, 2003, 1037, 999, 102], [101, 2023, 2003, 1037, 2000, 102]])
-    decoded = decode_ids(input_ids, tokenizer)
-    assert decoded == ['[CLS] the quick brown [UNK] [SEP]', '[CLS] the quick brown fox [SEP]']
+@pytest.fixture
+def sample_input():
+    return torch.tensor([[0.1, 0.2], [-0.3, -0.4]])
+
+def test_nn_project(sample_input):
+    expected_output = torch.tensor([[0.4, 0.8], [0.0, 0.0]])
+    output = nn_project(sample_input)
+    assert torch.allclose(output, expected_output)
