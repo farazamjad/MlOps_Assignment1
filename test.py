@@ -30,3 +30,5 @@ def test_optimize_prompt():
 
     # Assert that the output is a torch.Tensor
     assert isinstance(learned_prompt, torch.Tensor)
+
+    
