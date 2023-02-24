@@ -1,35 +1,19 @@
-name: CodeQL Analysis
+name: CodeQL
 
-on:
-  push:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
   analyze:
-    name: Analyze CodeQL
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up CodeQL
-        uses: github/codeql-action/setup@v1
+      - uses: actions/checkout@v2
         with:
-          languages: python
-          python-version: '3.8'
-          
-      - name: Run CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+          fetch-depth: 2
+      - uses: github/codeql-action/init@v1
         with:
-          query: "python-security-and-quality"
-          # the above query is a pre-built query that checks for security and quality issues in Python code
-          
-      - name: Upload results
-        uses: actions/upload-artifact@v2
-        with:
-          name: CodeQL results
-          path: ${{github.workspace}}/codeql-results
-
-     
+          languages: cpp, python
+          queries: +security-and-quality
+      - uses: github/codeql-action/autobuild@v1
+      - uses: github/codeql-action/analyze@v1
