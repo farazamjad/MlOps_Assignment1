@@ -11,6 +11,6 @@ def sample_input():
 def test_nn_project(sample_input):
     embedding_layer = nn.Linear(2, 2)
     expected_output = torch.tensor([[0.4, 0.8], [0.0, 0.0]])
-    output = nn_project(sample_input.unsqueeze(0), embedding_layer)
+    output = nn_project(sample_input.unsqueeze(0).to(embedding_layer.weight.dtype), embedding_layer)
     assert torch.allclose(output, expected_output, rtol=1e-03, atol=1e-03)
 
