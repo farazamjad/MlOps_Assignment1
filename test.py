@@ -1,6 +1,6 @@
 import torch
 from transformers import AutoTokenizer
-from my_module import decode_ids
+from optim_utils.py import decode_ids
 
 def test_decode_ids():
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
