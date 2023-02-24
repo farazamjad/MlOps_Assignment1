@@ -2,7 +2,7 @@ import sys
 from PIL import Image
 import torch
 from run import optimize_prompt
-
+#ww
 def test_optimize_prompt():
     # Load test image
     test_image = Image.new('RGB', (256, 256), color='white')
