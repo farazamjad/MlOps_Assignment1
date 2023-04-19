@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Install dependencies') {
+            steps {
+                sh 'pip3 install -r requirements.txt'
+            }
+        }
+       
+        stage('Run Pylint ') {
+            steps {
+                sh 'python3 -m pylint run.py'
+            }
+        }
+        stage('CodeQL analysis') {
+            steps {
+                withEnv(['GITHUB_TOKEN=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']) {
+                    sh '/usr/local/bin/codeql database create --language=python --source-root=. CodeQlDb5'
+                }
+            }
+        }
+       
+
+        stage('Run tests') {
+            steps {
+                sh 'pip3 install pytest'
+                sh 'python3 -m pytest test.py'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'deploying'
+            }
+        }
+    }
+}
